@@ -45,7 +45,8 @@ def main():
         library_path=args.library_path,
         model_path=args.model_file_path,
         context_path=args.context_file_path)
-
+    def _frame_index_to_sec(frame_index):
+        return float(frame_index * rhino.frame_length) / float(rhino.sample_rate)
     audio, sample_rate = soundfile.read(args.input_audio_file_path, dtype='int16')
     assert sample_rate == rhino.sample_rate
 
@@ -57,7 +58,7 @@ def main():
             if rhino.is_understood():
                 intent, slot_values = rhino.get_intent()
                 print()
-                print('intent : %s' % intent)
+                print('intent : %s at time: %f' % (intent, _frame_index_to_sec(i)))
                 for slot, value in slot_values.items():
                     print('%s: %s' % (slot, value))
             else:
